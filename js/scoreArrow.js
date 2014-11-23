@@ -5,5 +5,6 @@ define(function(require) {
     C = require('constants'),
     Util = require('util');
 
-    
+    function ScoreArrow(position) {
+         playerNotes.call(this);
 
