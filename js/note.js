@@ -22,7 +22,6 @@ define(function(require) {
         
         // import up arrow
         var img = Raster('media/arrow.png', start)
-        img.size = new Size(100,100);
 
         // rotate image to match direction
         if (direction == 'left') 
