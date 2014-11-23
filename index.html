@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Hello, world</title>
+    <title>The Game</title>
+    <link href="style.css" rel="stylesheet">
 </head>
 <body>
-    <p> Hello, world </p>
+    <div id="startBox">
+        <h1>The Game</h1>
+        <button id="start">Start</button>
+        <div id="score"></div>
+    </div>
+    <canvas id="myCanvas" width="800" height="600" hidpi="on"></canvas>
+    <script src="js/vendor/underscore-min.js"></script>
+    <script src="js/vendor/paper.js"></script>
+    <script src="js/vendor/require.js" data-main="js/main"></script>
 </body>
 
 </html>

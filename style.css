@@ -1,0 +1,38 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    overflow: hidden;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: lighter;
+}
+
+canvas {
+    display: none;
+    border: 1px solid black;
+    position: absolute;
+    margin: auto;
+    top: 0; left: 0; right: 0; bottom: 0;
+}
+
+#startBox {
+    margin-top: 100px;
+    text-align: center;
+}
+
+h1 {
+    font-weight: lighter;
+    font-size: 120px;
+}
+
+button {
+    font-size: 24px;
+    padding: 3px 15px;
+    border-radius: 4px;
+}
+
+#startBox div {
+    margin-top: 15px;
+}
