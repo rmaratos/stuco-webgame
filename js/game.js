@@ -16,22 +16,26 @@ define(function(require) {
     C    = require('constants'),
     Util = require('util');
 
+    var playerNotes = new Group();
+    var fallingNotes = new Group();
+
     var Game = {
         start: function() {
             this.player = [];
             // this.lastFish = 0;
+            playerNotes = new Group();
+            fallingNotes = new Group();
             this.score = 0;
             this.started = true;
-
-            // for (var i = 0; i < 10; i++) {
-            //     this.newEnemy();
-            // }
         },
 
         end: function() {
             document.getElementById('startBox').style.display = 'block';
             // document.getElementById('score').innerHTML = 'Your score was ' + this.score;
             this.started = false;
+
+            playerNotes.removeChildren();
+            fallingNotes.removeChildren();
         },
 
         loop: function(e) {
@@ -40,14 +44,9 @@ define(function(require) {
                 return;
             }
 
-            // var player = this.player;
             var arrows = [];
-            for (var i=0; i < this.player.length; i++) {
-                console.log("removing");
-                console.log(this.player[i]);
-                this.player[i].remove();
-                console.log(this.player[i]);
-            }
+
+            playerNotes.removeChildren();
             // handle keyboard events for moving fish
             if (Key.isDown('w') || Key.isDown("up")) {
                 arrows.push("up");
@@ -63,101 +62,30 @@ define(function(require) {
             if (Key.isDown('d') || Key.isDown("right")) {
                 arrows.push("right");
             }
-            this.player = [];
 
             for (var i=0; i < arrows.length; i++)
             {
-                this.player.push(new Note(arrows[i]));
+                var note = new Note([400,400], arrows[i]);
+                playerNotes.addChild(note);
             }
 
             console.log(arrows);
 
-            // // do simple 2D physics for the player
-            // // calculate velocity with deceleration
-            // var playerBounds = player.strokeBounds;
 
-            // if (!view.bounds.contains(playerBounds)) {
+            // Move notes down
+            _.forEach(fallingNotes.children, function(note) {
 
-            //     // fixme: player can still get stuck. detection isn't
-            //     var nx = playerBounds.width / 2, ny = playerBounds.height / 2;
-            //     if ((player.position.x <= nx && player.velocity[0] < 0) ||
-            //         (player.position.x >= view.bounds.width - nx && player.velocity[0] > 0)) {
-            //         player.velocity[0] = 0;
-            //     } else if((player.position.y <= ny && player.velocity[1] < 0) ||
-            //               (player.position.y >= view.bounds.height - ny && player.velocity[1] > 0)) {
-            //         player.velocity[1] = 0;
-            //     }
-            // }
+                note.position = note.position.add(note.velocity);
 
+            }, this);
 
-            // // move the fish by the given velocity
-            // player.position = player.position.add(player.velocity);
-
-            // // change the fish's orientation accordingly
-            // if ((player.velocity[0] > 0 && player.orientation == C.LEFT) ||
-            //     (player.velocity[0] < 0 && player.orientation == C.RIGHT)) {
-            //     player.rotate(180);
-            //     player.orientation = !player.orientation;
-            // }
-
-            // // handle enemy fish logic and collisions
-            // _.forEach(project.activeLayer.children, function(otherFish) {
-            //     if (player.id === otherFish.id) {
-            //         return;
-            //     }
-
-            //     var
-            //     otherBounds = otherFish.strokeBounds,
-            //     overlap = otherBounds.intersect(playerBounds),
-            //     overlapArea = overlap.width * overlap.height,
-            //     otherArea   = otherBounds.width * otherBounds.height;
-
-            //     if (overlapArea / otherArea > C.MIN_EAT_OVERLAP & overlap.width > 0) {
-            //         if (playerBounds.width > otherBounds.width) {
-            //             player.scale((playerBounds.width + C.SIZE_GAIN * (otherBounds.width / playerBounds.width + 0.3)) / playerBounds.width);
-            //             otherFish.remove();
-            //             this.score++;
-
-            //             player.setColor(otherFish.getColor());
-            //         } else {
-            //             this.end();
-            //         }
-            //     }
-
-            //     otherFish.position = otherFish.position.add(otherFish.velocity);
-
-            //     // todo: add GC
-            //     /*if (!other_bounds.intersects(view.bounds) && !view.bounds.contains(other_bounds)) {
-            //       otherFish.remove();
-            //       }*/
-            // }, this);
-
-           // Util.decelerate(player.velocity);
-
-           //  // generate fishes every second
-           //  if (e.time - this.lastFish >= C.FISH_SPAWN_TIME) {
-           //      this.newEnemy();
-           //      this.lastFish = e.time;
-           //  }
         },
 
-        newNote: function() {
-            var pos = Math.random() * view.bounds.height;
-            var side = Math.random() > 0.5;
-            var enemy = new Fish([side ? view.bounds.width : 0, pos]);
+        // Add new falling note to screen
+        newFallingNote: function() {
+            var note = new Note();
+            fallingNotes.addChild(note);
 
-            var cur_scale = this.player.strokeBounds.width / enemy.strokeBounds.width;
-            var rand = (Math.random() * 2 - 1) * (C.MAX_ENEMY_VARIANCE - C.MIN_ENEMY_VARIANCE);
-            rand += Util.sign(rand) * C.MIN_ENEMY_VARIANCE;
-
-            var scale = cur_scale + rand;
-            enemy.scale(scale);
-
-            enemy.position.x += (side ? 1 : -1) * enemy.strokeBounds.width / 2;
-
-            enemy.addVelocity([(side ? -1 : 1) * 3 * (cur_scale / scale), 0]);
-            enemy.children[0].fillColor = '#' + (Math.round(0xffffff * Math.random())).toString(16);
-            enemy.rotate(side ? 0 : 180);
         }
     };
 
