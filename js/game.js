@@ -17,7 +17,7 @@ define(function(require) {
     Util = require('util');
     var dirs = ["up", "down", "left", "right"];
     var playerNotes = new Group();
-    var fallingNotes = new Group();
+    var risingNotes = new Group();
 
     var Game = {
         start: function() {
@@ -39,7 +39,7 @@ define(function(require) {
             }
             // console.log("LENGTH");
             // console.log(playerNotes.length);
-            fallingNotes = new Group();
+            risingNotes = new Group();
             this.score = 0;
             this.started = true;
             this.addingNote = false;
@@ -52,7 +52,7 @@ define(function(require) {
             this.started = false;
 
             playerNotes.removeChildren();
-            fallingNotes.removeChildren();
+            risingNotes.removeChildren();
         },
 
         loop: function(e) {
@@ -92,8 +92,8 @@ define(function(require) {
                 // console.log(note.name);
                 // console.log(arrows);
                 var enable = arrows.indexOf(note.name)>=0;
-                // console.log(enable);
                 note.img.visible = enable;
+
             }, this);
 
             // for (var i=0; i < dirs.length; i++)
@@ -109,7 +109,7 @@ define(function(require) {
             // console.log(playerNotes);
             // console.log(arrows);
 
-            _.forEach(fallingNotes.children, function(note) {
+            _.forEach(risingNotes.children, function(note) {
                 // console.log("moving note");
                 note.move();
             }, this);
@@ -122,7 +122,7 @@ define(function(require) {
         newFallingNote: function() {
             var dir = Util.choose(dirs);
             var note = new Note(dir, 550);
-            fallingNotes.addChild(note);
+            risingNotes.addChild(note);
         }
     };
 
