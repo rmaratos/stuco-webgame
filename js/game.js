@@ -25,6 +25,15 @@ define(function(require) {
 
     var Game = {
         start: function() {
+            this.audio = document.getElementById("faf");
+            console.log("playing");
+            console.log(this.audio.paused);
+            this.audio.play();
+            console.log("playing");
+            console.log(this.audio.paused);
+
+            // document.getElementById('faf').addEventListener('playing', this.end, false);
+
             this.player = [];
             this.lastNote = 0;
             // this.lastFish = 0;
@@ -57,12 +66,21 @@ define(function(require) {
             this.started = false;
 
             playerNotes.removeChildren();
+            upNotes.removeChildren();
+            downNotes.removeChildren();
+            leftNotes.removeChildren();
+            rightNotes.removeChildren();
         },
 
         loop: function(e) {
+            console.log("playing");
+            console.log(this.audio.paused);
+            if (this.audio.paused)
+                this.end();
             // console.log(pressed);
             this.textBox.content = "Score: " + this.score;
-
+            if (this.score < -50)
+                this.end();
             if (!this.started) {
                 return;
             }
