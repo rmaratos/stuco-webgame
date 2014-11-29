@@ -64,7 +64,7 @@ define(function(require) {
             document.getElementById('startBox').style.display = 'block';
             document.getElementById('score').innerHTML = 'Your score was ' + this.score;
             this.started = false;
-
+            this.audio.pause();
             playerNotes.removeChildren();
             upNotes.removeChildren();
             downNotes.removeChildren();
