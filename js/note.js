@@ -55,12 +55,21 @@ define(function(require) {
 
         // TODO: set velocity based on tempo
         this.img = img;
-        this.velocity = [0,0];
+        this.velocity = [0,-10];
 
         // this.drawImage(img, offset);
      }
 
      Note.prototype = Object.create(Group.prototype);
+
+     Note.prototype.move = function() {
+        // console.log("moving/???");
+        // console.log("old position");
+        // console.log(this.img.position);
+        this.img.position = new Point(this.img.position.x, this.img.position.y - 2);
+        // console.log("new position");
+        // console.log(this.img.position);
+     };
 
      Note.prototype.setTempo = function(vector) {
          this.velocity = [ vector[0],

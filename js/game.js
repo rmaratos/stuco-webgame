@@ -23,7 +23,7 @@ define(function(require) {
         start: function() {
             this.player = [];
             // this.lastFish = 0;
-            console.log("Making playernotes");
+            // console.log("Making playernotes");
             playerNotes = new Group();
             var blankNotes = new Group();
             for (var i=0; i < dirs.length; i++)
@@ -42,6 +42,8 @@ define(function(require) {
             fallingNotes = new Group();
             this.score = 0;
             this.started = true;
+            this.addingNote = false;
+
         },
 
         end: function() {
@@ -58,13 +60,13 @@ define(function(require) {
             if (!this.started) {
                 return;
             }
-
             var arrows = [];
             // playerNotes.removeChildren();
             // handle keyboard events for moving fish
             if (Key.isDown('w') || Key.isDown("up")) {
                 arrows.push("up");
             }
+
             if (Key.isDown('s') || Key.isDown('down')) {
                 arrows.push("down");
             }
@@ -76,12 +78,21 @@ define(function(require) {
             if (Key.isDown('d') || Key.isDown("right")) {
                 arrows.push("right");
             }
+
+            if (Key.isDown('n')) {
+                if (!this.addingNote) {
+                this.newFallingNote();
+                this.addingNote = true;
+                }
+            }
+            else
+                this.addingNote = false;
             // console.log(playerNotes);
             _.forEach(playerNotes.children, function(note) {
-                console.log(note.name);
-                console.log(arrows);
+                // console.log(note.name);
+                // console.log(arrows);
                 var enable = arrows.indexOf(note.name)>=0;
-                console.log(enable);
+                // console.log(enable);
                 note.img.visible = enable;
             }, this);
 
@@ -98,21 +109,20 @@ define(function(require) {
             // console.log(playerNotes);
             // console.log(arrows);
 
-
-            // Move notes down
-            // _.forEach(fallingNotes.children, function(note) {
-
-            //     note.position = note.position.add(note.velocity);
-
-            // }, this);
+            _.forEach(fallingNotes.children, function(note) {
+                // console.log("moving note");
+                note.move();
+            }, this);
 
         },
 
+
+
         // Add new falling note to screen
         newFallingNote: function() {
-            var note = new Note();
+            var dir = Util.choose(dirs);
+            var note = new Note(dir, 550);
             fallingNotes.addChild(note);
-
         }
     };
 
