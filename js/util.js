@@ -28,7 +28,7 @@ define(function(require) {
         return Util.sign(newVel) * Math.min(Math.abs(newVel), C.MAX_VELOCITY);
     };
 
-            // Stack Overflow http://stackoverflow.com/questions/9071573/is-there-a-simple-way-to-make-a-random-selection-from-an-array-in-javascript-or
+    // Stack Overflow http://stackoverflow.com/questions/9071573/is-there-a-simple-way-to-make-a-random-selection-from-an-array-in-javascript-or
     Util.choose = function(choices) {
             var index = Math.floor(Math.random() * choices.length);
             return choices[index];

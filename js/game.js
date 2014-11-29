@@ -22,6 +22,7 @@ define(function(require) {
     var Game = {
         start: function() {
             this.player = [];
+            this.lastNote = 0;
             // this.lastFish = 0;
             // console.log("Making playernotes");
             playerNotes = new Group();
@@ -37,8 +38,7 @@ define(function(require) {
                 var note = new Note(dirs[i], 50);
                 playerNotes.addChild(note);
             }
-            // console.log("LENGTH");
-            // console.log(playerNotes.length);
+
             risingNotes = new Group();
             this.score = 0;
             this.started = true;
@@ -61,8 +61,7 @@ define(function(require) {
                 return;
             }
             var arrows = [];
-            // playerNotes.removeChildren();
-            // handle keyboard events for moving fish
+
             if (Key.isDown('w') || Key.isDown("up")) {
                 arrows.push("up");
             }
@@ -87,32 +86,24 @@ define(function(require) {
             }
             else
                 this.addingNote = false;
-            // console.log(playerNotes);
+
             _.forEach(playerNotes.children, function(note) {
-                // console.log(note.name);
-                // console.log(arrows);
                 var enable = arrows.indexOf(note.name)>=0;
                 note.img.visible = enable;
 
             }, this);
 
-            // for (var i=0; i < dirs.length; i++)
-            // {
-            //     playerNotes[i].visible = (dirs[i] in arrows);
-            // }
-
-            // console.log("notes");
-            // console.log(playerNotes);
-            // playerNotes[0].remove();
-            // playerNotes.removeChildren();
-            // console.log("removed");
-            // console.log(playerNotes);
-            // console.log(arrows);
-
             _.forEach(risingNotes.children, function(note) {
-                // console.log("moving note");
                 note.move();
             }, this);
+
+            // console.log(e.time);
+
+            if (e.time - this.lastNote >= 0.5) {
+                // console.log("new note!");
+                this.newFallingNote();
+                this.lastNote = e.time;
+            }
 
         },
 
@@ -121,8 +112,9 @@ define(function(require) {
         // Add new falling note to screen
         newFallingNote: function() {
             var dir = Util.choose(dirs);
-            var note = new Note(dir, 550);
+            var note = new Note(dir, 575);
             risingNotes.addChild(note);
+            console.log(risingNotes.children.length);
         }
     };
 
