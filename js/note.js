@@ -16,15 +16,25 @@ define(function(require) {
      * position is tuple paper.js Point
      * direction is string 'up' 'down' 'left' or 'right'
      */
-    function Note(position, direction) {
+    function Note(direction) {
         Group.call(this);
-        console.log(position);
-        var start = new Point(position[0], position[1]);
+        var y = 300;
+        var x;
+        if (direction == 'left')
+            x = 100;
+        else if (direction == 'right')
+            x = 200;
+        else if (direction == 'up')
+            x = 300;
+        else if (direction == 'down')
+            x = 400;
+        var start = new Point(x, y);
 
         // import up arrow
         var img = new Raster('media/arrow.png', start);
+        img.visible = false;
         console.log("a");
-        // img.on('load', function() {
+        img.on('load', function() {
             img.size = new Size(50,50);
             console.log("rotate direction");
             console.log(direction);
@@ -36,13 +46,13 @@ define(function(require) {
                 console.log("???");
                 img.rotate(90);
             }
-        // });
+            img.visible = true;
+        });
         console.log("b");
         // rotate image to match direction
 
 
         // TODO: set velocity based on tempo
-        this.position = position;
         this.velocity = [0,0];
 
         // this.drawImage(img, offset);

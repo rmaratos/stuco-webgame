@@ -65,7 +65,7 @@ define(function(require) {
 
             for (var i=0; i < arrows.length; i++)
             {
-                var note = new Note([400,400], arrows[i]);
+                var note = new Note(arrows[i]);
                 playerNotes.addChild(note);
             }
 
