@@ -15,7 +15,7 @@ define(function(require) {
     Note = require('note'),
     C    = require('constants'),
     Util = require('util');
-
+    var dirs = ["up", "down", "left", "right"];
     var playerNotes = new Group();
     var fallingNotes = new Group();
 
@@ -23,7 +23,22 @@ define(function(require) {
         start: function() {
             this.player = [];
             // this.lastFish = 0;
+            console.log("Making playernotes");
             playerNotes = new Group();
+            var blankNotes = new Group();
+            for (var i=0; i < dirs.length; i++)
+            {
+                var note = new Note(dirs[i], 50, true);
+                blankNotes.addChild(note);
+            }
+
+            for (var i=0; i < dirs.length; i++)
+            {
+                var note = new Note(dirs[i], 50);
+                playerNotes.addChild(note);
+            }
+            // console.log("LENGTH");
+            // console.log(playerNotes.length);
             fallingNotes = new Group();
             this.score = 0;
             this.started = true;
@@ -45,8 +60,7 @@ define(function(require) {
             }
 
             var arrows = [];
-
-            playerNotes.removeChildren();
+            // playerNotes.removeChildren();
             // handle keyboard events for moving fish
             if (Key.isDown('w') || Key.isDown("up")) {
                 arrows.push("up");
@@ -62,22 +76,35 @@ define(function(require) {
             if (Key.isDown('d') || Key.isDown("right")) {
                 arrows.push("right");
             }
+            // console.log(playerNotes);
+            _.forEach(playerNotes.children, function(note) {
+                console.log(note.name);
+                console.log(arrows);
+                var enable = arrows.indexOf(note.name)>=0;
+                console.log(enable);
+                note.img.visible = enable;
+            }, this);
 
-            for (var i=0; i < arrows.length; i++)
-            {
-                var note = new Note(arrows[i]);
-                playerNotes.addChild(note);
-            }
+            // for (var i=0; i < dirs.length; i++)
+            // {
+            //     playerNotes[i].visible = (dirs[i] in arrows);
+            // }
 
-            console.log(arrows);
+            // console.log("notes");
+            // console.log(playerNotes);
+            // playerNotes[0].remove();
+            // playerNotes.removeChildren();
+            // console.log("removed");
+            // console.log(playerNotes);
+            // console.log(arrows);
 
 
             // Move notes down
-            _.forEach(fallingNotes.children, function(note) {
+            // _.forEach(fallingNotes.children, function(note) {
 
-                note.position = note.position.add(note.velocity);
+            //     note.position = note.position.add(note.velocity);
 
-            }, this);
+            // }, this);
 
         },
 
