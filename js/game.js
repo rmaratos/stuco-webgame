@@ -17,38 +17,31 @@ define(function(require) {
     Util = require('util');
     var dirs = ["up", "down", "left", "right"];
     var pressed = {"up":false, "down":false, "left":false, "right":false};
+    var awds = {"up":"w", "down":"s", "left":"a", "right":"d"};
     var playerNotes = new Group();
     var upNotes = new Group();
     var downNotes = new Group();
     var leftNotes = new Group();
     var rightNotes = new Group();
+    var notes = [upNotes, downNotes, leftNotes, rightNotes];
 
     var Game = {
         start: function() {
+            // Start song
             this.audio = document.getElementById("faf");
-            console.log("playing");
-            console.log(this.audio.paused);
             this.audio.play();
-            console.log("playing");
-            console.log(this.audio.paused);
 
-            // document.getElementById('faf').addEventListener('playing', this.end, false);
-
-            this.player = [];
             this.lastNote = 0;
-            // this.lastFish = 0;
-            // console.log("Making playernotes");
+
+            // Add notes
             playerNotes = new Group();
             var blankNotes = new Group();
+            var note;
             for (var i=0; i < dirs.length; i++)
             {
-                var note = new Note(dirs[i], 50, true);
+                note = new Note(dirs[i], 50, true);
                 blankNotes.addChild(note);
-            }
-
-            for (var i=0; i < dirs.length; i++)
-            {
-                var note = new Note(dirs[i], 50);
+                note = new Note(dirs[i], 50);
                 playerNotes.addChild(note);
             }
 
@@ -56,68 +49,41 @@ define(function(require) {
             this.textBox = new PointText(new Point(100,100));
             this.textBox.content = "Score: " + this.score;
             this.started = true;
-            this.addingNote = false;
 
         },
 
         end: function() {
             document.getElementById('startBox').style.display = 'block';
             document.getElementById('score').innerHTML = 'Your score was ' + this.score;
-            this.started = false;
             this.audio.pause();
+            this.started = false;
+
             playerNotes.removeChildren();
-            upNotes.removeChildren();
-            downNotes.removeChildren();
-            leftNotes.removeChildren();
-            rightNotes.removeChildren();
+            _.forEach(notes, function(group) {
+                group.removeChildren();
+            }, this);
         },
 
         loop: function(e) {
-            console.log("playing");
-            console.log(this.audio.paused);
+            if (!this.started) {
+                return;
+            }
             if (this.audio.paused)
                 this.end();
             // console.log(pressed);
             this.textBox.content = "Score: " + this.score;
             if (this.score < -50)
                 this.end();
-            if (!this.started) {
-                return;
-            }
+
             var arrows = [];
 
-            if (Key.isDown('w') || Key.isDown("up")) {
-                arrows.push("up");
+            for (var i=0; i<dirs.length;i++){
+                var dir = dirs[i];
+                if (Key.isDown(awds[dir]) || Key.isDown(dir))
+                    arrows.push(dir);
+                else
+                    pressed[dir] = false;
             }
-            else
-                pressed["up"] = false;
-
-            if (Key.isDown('s') || Key.isDown('down')) {
-                arrows.push("down");
-            }
-            else
-                pressed["down"] = false;
-
-            if (Key.isDown('a') || Key.isDown("left")) {
-                arrows.push("left");
-            }
-            else
-                pressed["left"] = false;
-
-            if (Key.isDown('d') || Key.isDown("right")) {
-                arrows.push("right");
-            }
-            else
-                pressed["right"] = false;
-
-            if (Key.isDown('n')) {
-                if (!this.addingNote) {
-                this.newFallingNote();
-                this.addingNote = true;
-                }
-            }
-            else
-                this.addingNote = false;
 
             _.forEach(playerNotes.children, function(note) {
                 var enable = arrows.indexOf(note.name)>=0;
@@ -127,28 +93,13 @@ define(function(require) {
 
             }, this);
 
-            _.forEach(upNotes.children, function(note) {
-                this.moveNote(note);
+            _.forEach(notes, function(group){
+                _.forEach(group.children, function(note) {
+                    this.moveNote(note);
+                }, this);
             }, this);
-
-            _.forEach(downNotes.children, function(note) {
-                this.moveNote(note);
-            }, this);
-
-            _.forEach(leftNotes.children, function(note) {
-                this.moveNote(note);
-            }, this);
-
-            _.forEach(rightNotes.children, function(note) {
-                this.moveNote(note);
-            }, this);
-
-
-
-            // console.log(e.time);
 
             if (e.time - this.lastNote >= 0.5) {
-                // console.log("new note!");
                 this.newFallingNote();
                 this.lastNote = e.time;
             }
@@ -184,15 +135,12 @@ define(function(require) {
                 var y = note.img.position.y;
                 if ((25 < y) && (y < 75)){
                     this.score += 25;
-                    console.log("bang!");
                     note.img.remove();
                     note.remove();
                 }
                 else
                     this.score -= 5;
             }, this);
-
-
         },
 
         // Add new falling note to screen
