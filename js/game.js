@@ -17,7 +17,10 @@ define(function(require) {
     Util = require('util');
     var dirs = ["up", "down", "left", "right"];
     var playerNotes = new Group();
-    var risingNotes = new Group();
+    var upNotes = new Group();
+    var downNotes = new Group();
+    var leftNotes = new Group();
+    var rightNotes = new Group();
 
     var Game = {
         start: function() {
@@ -39,7 +42,6 @@ define(function(require) {
                 playerNotes.addChild(note);
             }
 
-            risingNotes = new Group();
             this.score = 0;
             this.started = true;
             this.addingNote = false;
@@ -52,7 +54,6 @@ define(function(require) {
             this.started = false;
 
             playerNotes.removeChildren();
-            risingNotes.removeChildren();
         },
 
         loop: function(e) {
@@ -93,9 +94,23 @@ define(function(require) {
 
             }, this);
 
-            _.forEach(risingNotes.children, function(note) {
+            _.forEach(upNotes.children, function(note) {
                 note.move();
             }, this);
+
+            _.forEach(downNotes.children, function(note) {
+                note.move();
+            }, this);
+
+            _.forEach(leftNotes.children, function(note) {
+                note.move();
+            }, this);
+
+            _.forEach(rightNotes.children, function(note) {
+                note.move();
+            }, this);
+
+
 
             // console.log(e.time);
 
@@ -113,8 +128,14 @@ define(function(require) {
         newFallingNote: function() {
             var dir = Util.choose(dirs);
             var note = new Note(dir, 575);
-            risingNotes.addChild(note);
-            console.log(risingNotes.children.length);
+            if (dir == 'left')
+                leftNotes.addChild(note);
+            else if (dir == 'down')
+                downNotes.addChild(note);
+            else if (dir == 'up')
+                upNotes.addChild(note);
+            else if (dir == 'right')
+                rightNotes.addChild(note);
         }
     };
 
