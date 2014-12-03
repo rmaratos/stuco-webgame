@@ -14,7 +14,8 @@ define(function(require) {
     var
     Note = require('note'),
     C    = require('constants'),
-    Util = require('util');
+    Util = require('util'),
+    Healthbar = require('health');
     var dirs = ["up", "down", "left", "right"];
     var pressed = {"up":false, "down":false, "left":false, "right":false};
     var awds = {"up":"w", "down":"s", "left":"a", "right":"d"};
@@ -46,22 +47,26 @@ define(function(require) {
             }
 
             this.score = 0;
-            this.textBox = new PointText(new Point(100,100));
-            this.textBox.content = "Score: " + this.score;
+            this.health = 100;
+            this.healthBox = new PointText(new Point(100, 125));
+            this.healthBox.content = "Health: " + this.health;
+            this.scoreBox = new PointText(new Point(100,100));
+            this.scoreBox.content = "Score: " + this.score;
             this.started = true;
-
+            this.healthbar = new Healthbar(100, 150, this.health);
         },
 
         end: function() {
+            document.getElementById('myCanvas').style.display = 'none';
             document.getElementById('startBox').style.display = 'block';
             document.getElementById('score').innerHTML = 'Your score was ' + this.score;
             this.audio.pause();
-            this.started = false;
-
-            playerNotes.removeChildren();
+            playerNotes.visible = false;
             _.forEach(notes, function(group) {
-                group.removeChildren();
+                group.visible = false;
             }, this);
+             
+            this.started = false;
         },
 
         loop: function(e) {
@@ -71,8 +76,8 @@ define(function(require) {
             if (this.audio.paused)
                 this.end();
             // console.log(pressed);
-            this.textBox.content = "Score: " + this.score;
-            if (this.score < -50)
+            this.scoreBox.content = "Score: " + this.score;
+            if (this.health <= 0)
                 this.end();
 
             var arrows = [];
@@ -112,7 +117,10 @@ define(function(require) {
                 note.img.remove();
                 note.remove();
                 console.log(":(");
-                this.score -= 10;
+                this.health -= 5;
+                this.healthBox.content = "Health: " + this.health;
+                this.healthbar.fillColor = 'white';
+                this.healthbar = new Healthbar(100, 150, this.health);
             }
         },
         pressed: function(dir) {
@@ -132,14 +140,35 @@ define(function(require) {
 
             _.forEach(notes.children, function(note) {
                 console.log(note.img.position.y);
-                var y = note.img.position.y;
-                if ((25 < y) && (y < 75)){
+                var y = note.img.position.y; 
+                // perfect
+                if ((-25 < y) && (y < 75)) {
                     this.score += 25;
+                    console.log("perf");
                     note.img.remove();
                     note.remove();
                 }
-                else
-                    this.score -= 5;
+                // good
+                else if ((y < 0) && (y < 75)) {
+                    this.score += 15;
+                    console.log("good");
+                    note.img.remove();
+                    note.remove();
+                }
+                // ok
+                else if ((y < 15) && (y < 75)) {
+                    this.score += 5;
+                    console.log("ok");
+                    note.img.remove();
+                    note.remove();
+                }
+                else if ((y >= 25) && (y < 75)) {
+                    console.log("miss");
+                    this.health -= 5;
+                    this.healthBox.content = "Health: " + this.health;
+                    this.healthbar.fillColor = 'white';
+                    this.healthbar = new Healthbar(100, 150, this.health);
+                }
             }, this);
         },
 
