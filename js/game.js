@@ -48,8 +48,12 @@ define(function(require) {
 
             this.score = 0;
             this.health = 100;
+            if (this.healthBox)
+            this.healthBox.remove();
             this.healthBox = new PointText(new Point(100, 125));
             this.healthBox.content = "Health: " + this.health;
+            if (this.scoreBox)
+            this.scoreBox.remove();
             this.scoreBox = new PointText(new Point(100,100));
             this.scoreBox.content = "Score: " + this.score;
             this.started = true;
@@ -65,7 +69,7 @@ define(function(require) {
             _.forEach(notes, function(group) {
                 group.visible = false;
             }, this);
-             
+
             this.started = false;
         },
 
@@ -120,6 +124,7 @@ define(function(require) {
                 this.health -= 5;
                 this.healthBox.content = "Health: " + this.health;
                 this.healthbar.fillColor = 'white';
+                this.healthbar.remove();
                 this.healthbar = new Healthbar(100, 150, this.health);
             }
         },
@@ -140,7 +145,7 @@ define(function(require) {
 
             _.forEach(notes.children, function(note) {
                 console.log(note.img.position.y);
-                var y = note.img.position.y; 
+                var y = note.img.position.y;
                 // perfect
                 if ((-25 < y) && (y < 75)) {
                     this.score += 25;

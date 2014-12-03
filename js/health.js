@@ -13,7 +13,7 @@ define(function(require) {
 
         var rect = new Rectangle(x,y,width, 25);
         var bar = new Path.Rectangle(rect);
-        	
+
         bar.fillColor = {
         	gradient : {
     			stops : ['red', 'yellow', 'green']
@@ -26,6 +26,11 @@ define(function(require) {
         	console.log("decrement called");
     	    bar.bounds.width -= 5;
         };
+
+        Healthbar.prototype.remove = function() {
+            bar.remove();
+            // rect.remove();
+        }
 
     };
 
